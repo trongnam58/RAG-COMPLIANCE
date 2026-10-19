@@ -1,0 +1,248 @@
+{
+  "document": {
+    "id": "DIR-2008-48-EC",
+    "title": "Directive 2008/48/EC on Credit Agreements for Consumers",
+    "issuer": "European Parliament and Council",
+    "effective_date": "2008-04-23",
+    "jurisdiction": "European Union"
+  },
+  "activities": [
+    {
+      "id": "ACT-001",
+      "name": "A_Create Application",
+      "description": "Consumer submits credit application",
+      "event_origin": "Application",
+      "article_ref": "Article 8(1)",
+      "required": true
+    },
+    {
+      "id": "ACT-002",
+      "name": "A_Submitted",
+      "description": "Application formally submitted to creditor",
+      "event_origin": "Application",
+      "article_ref": "Article 8(1)",
+      "required": false
+    },
+    {
+      "id": "ACT-003",
+      "name": "A_Concept",
+      "description": "Initial creditworthiness concept assessment",
+      "event_origin": "Application",
+      "article_ref": "Article 8(1)",
+      "required": true
+    },
+    {
+      "id": "ACT-004",
+      "name": "A_Accepted",
+      "description": "Creditworthiness assessment accepted",
+      "event_origin": "Application",
+      "article_ref": "Article 8(1)",
+      "required": true
+    },
+    {
+      "id": "ACT-005",
+      "name": "O_Create Offer",
+      "description": "Creditor prepares pre-contractual credit offer",
+      "event_origin": "Offer",
+      "article_ref": "Article 5(1)",
+      "required": true
+    },
+    {
+      "id": "ACT-006",
+      "name": "O_Created",
+      "description": "Offer document created in system",
+      "event_origin": "Offer",
+      "article_ref": "Article 5(1)",
+      "required": true
+    },
+    {
+      "id": "ACT-007",
+      "name": "O_Sent (mail and online)",
+      "description": "Pre-contractual information sent to consumer",
+      "event_origin": "Offer",
+      "article_ref": "Article 5(1)",
+      "required": true
+    },
+    {
+      "id": "ACT-008",
+      "name": "A_Complete",
+      "description": "Credit agreement completed and signed",
+      "event_origin": "Application",
+      "article_ref": "Article 10(1)",
+      "required": true
+    },
+    {
+      "id": "ACT-009",
+      "name": "O_Accepted",
+      "description": "Consumer accepts credit offer",
+      "event_origin": "Offer",
+      "article_ref": "Article 10(1)",
+      "required": false
+    },
+    {
+      "id": "ACT-010",
+      "name": "O_Returned",
+      "description": "Consumer exercises right of withdrawal",
+      "event_origin": "Offer",
+      "article_ref": "Article 14(1)",
+      "required": false
+    },
+    {
+      "id": "ACT-011",
+      "name": "A_Cancelled",
+      "description": "Application cancelled within withdrawal period",
+      "event_origin": "Application",
+      "article_ref": "Article 14(1)",
+      "required": false
+    },
+    {
+      "id": "ACT-012",
+      "name": "A_Incomplete",
+      "description": "Application flagged as incomplete",
+      "event_origin": "Application",
+      "article_ref": "Article 7(1)",
+      "required": false
+    },
+    {
+      "id": "ACT-013",
+      "name": "W_Call incomplete files",
+      "description": "Creditor contacts consumer for missing documents",
+      "event_origin": "Workflow",
+      "article_ref": "Article 7(1)",
+      "required": false
+    }
+  ],
+  "sequences": [
+    {
+      "id": "SEQ-002-NEW",
+      "from": "ACT-001",
+      "to": "ACT-003",
+      "type": "MUST_PRECEDE",
+      "article_ref": "Article 8(1)",
+      "description": "Application must precede creditworthiness assessment"
+    },
+    {
+      "id": "SEQ-003",
+      "from": "ACT-003",
+      "to": "ACT-004",
+      "type": "MUST_PRECEDE",
+      "article_ref": "Article 8(1)",
+      "description": "Concept assessment must precede acceptance"
+    },
+    {
+      "id": "SEQ-004",
+      "from": "ACT-004",
+      "to": "ACT-005",
+      "type": "MUST_PRECEDE",
+      "article_ref": "Article 5(1)",
+      "description": "Creditworthiness must be assessed before offer creation"
+    },
+    {
+      "id": "SEQ-005",
+      "from": "ACT-005",
+      "to": "ACT-006",
+      "type": "MUST_PRECEDE",
+      "article_ref": "Article 5(1)",
+      "description": "Offer must be created before being recorded"
+    },
+    {
+      "id": "SEQ-006",
+      "from": "ACT-006",
+      "to": "ACT-007",
+      "type": "MUST_PRECEDE",
+      "article_ref": "Article 5(1)",
+      "description": "Offer must be recorded before sending to consumer"
+    },
+    {
+      "id": "SEQ-007",
+      "from": "ACT-007",
+      "to": "ACT-008",
+      "type": "MUST_PRECEDE",
+      "article_ref": "Article 10(1)",
+      "description": "Pre-contractual info must be sent before agreement completion"
+    }
+  ],
+  "conditions": [
+    {
+      "id": "COND-001",
+      "description": "Right of withdrawal period",
+      "expression": "days_between(O_Sent, O_Returned) <= 14",
+      "article_ref": "Article 14(1)",
+      "threshold": 14,
+      "unit": "days",
+      "violation_type": "temporal",
+      "linked_activities": [
+        "returned_offer"
+      ]
+    },
+    {
+      "id": "COND-002",
+      "description": "Creditworthiness must be assessed before offer",
+      "expression": "A_Accepted BEFORE O_Create Offer",
+      "article_ref": "Article 8(1)",
+      "violation_type": "order",
+      "linked_activities": [
+        "concept"
+      ]
+    },
+    {
+      "id": "COND-003",
+      "description": "Pre-contractual info mandatory before agreement",
+      "expression": "O_Sent BEFORE A_Complete",
+      "article_ref": "Article 5(1)",
+      "violation_type": "skip",
+      "linked_activities": [
+        "sent_mail_online",
+        "sent_online"
+      ]
+    },
+    {
+      "id": "COND-004",
+      "description": "Maximum processing time for incomplete application",
+      "expression": "days_between(A_Incomplete, A_Validating) <= 8",
+      "article_ref": "Article 7(1)",
+      "threshold": 8,
+      "unit": "days",
+      "violation_type": "temporal",
+      "linked_activities": [
+        "incomplete"
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "ROLE-001",
+      "name": "Creditor System",
+      "type": "system",
+      "performs": [
+        "ACT-001",
+        "ACT-002",
+        "ACT-003",
+        "ACT-004",
+        "ACT-005",
+        "ACT-006",
+        "ACT-007",
+        "ACT-008"
+      ]
+    },
+    {
+      "id": "ROLE-002",
+      "name": "Credit Officer",
+      "type": "human",
+      "performs": [
+        "ACT-012",
+        "ACT-013"
+      ]
+    },
+    {
+      "id": "ROLE-003",
+      "name": "Consumer",
+      "type": "external",
+      "performs": [
+        "ACT-009",
+        "ACT-010",
+        "ACT-011"
+      ]
+    }
+  ]
+}

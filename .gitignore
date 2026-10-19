@@ -17,6 +17,12 @@ __pycache__/
 
 # OS
 .DS_Store
-Thumbs.dbsdata/
+Thumbs.db
 
-data/
+# Data files (ignore heavy logs/outputs, keep regulation graph and directory structure)
+data/raw/*.xes
+data/raw/*.parquet
+data/raw/*.csv
+data/processed/*
+!data/processed/.gitkeep
+*.bak

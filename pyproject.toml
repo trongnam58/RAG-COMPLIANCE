@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag-compliance"
+version = "0.1.0"
+description = "Compliance checking for business process event logs using Knowledge Graph (Neo4j) and Graph RAG"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "phamvu65" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
